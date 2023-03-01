@@ -58,9 +58,6 @@ public class FileUploadDownloadController {
         System.out.println(file.getOriginalFilename());
         System.out.println(username);
         Optional<FileEntity> fileOptional = fileService.findByNameAndUsername(file.getOriginalFilename(), username);
-        if(fileOptional.isPresent()){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("This file is already present");
-        }
 
         if(!fileService.upload(file,username)){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create directory");

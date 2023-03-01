@@ -2,6 +2,7 @@ package com.user.api.demo.service;
 
 import com.user.api.demo.model.FileEntity;
 import com.user.api.demo.repo.FileEntityRepository;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -92,6 +93,16 @@ public class FileService {
             // Move the temporary file to the final destination
             Path tempFilePath = tempFile.toPath();
             Path destinationPath = Paths.get(path,fileName);
+            if (Files.exists(destinationPath)) {
+                int count = 1;
+                String baseName = FilenameUtils.getBaseName(fileName);
+                String extension = FilenameUtils.getExtension(fileName);
+                while (Files.exists(destinationPath)) {
+                    fileName = baseName + " (" + count + ")" + "." + extension;
+                    destinationPath = Paths.get(path, fileName);
+                    count++;
+                }
+            }
             Files.move(tempFilePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
 
             // Create a FileEntity object with the file data and save it to the database
